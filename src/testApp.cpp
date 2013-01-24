@@ -16,17 +16,8 @@ void testApp::setup() {
 	//colors.push_back( ofColor(250, 250, 250) );
 	colors.push_back( ofColor(0, 0, 0) );
 	
-	// r & d logo //
-	//colors.push_back( ofColor(213, 64, 59) );
-	//colors.push_back( ofColor(232, 223, 85) );
-	//colors.push_back( ofColor(82, 157, 96) );
-	//colors.push_back( ofColor(1, 119, 195) );
-	//colors.push_back( ofColor(69, 71, 125) );
-	
 	
 	for (int i = 0; i < colors.size(); i++) {
-		//thread.setup(1, image, colors[0], 20, 2.f );
-		//thread.start();
 		packerThreads.push_back( new CirclePacker() );
 		packerThreads[packerThreads.size()-1]->setup(i, image, colors[i], 15, 3.f );
 		packerThreads[packerThreads.size()-1]->start();
@@ -73,11 +64,21 @@ void testApp::draw() {
 	ofFill();
     
     ofSetColor(0, 0, 0);
+    
+    bool bStillWorking = false;
+    
     stringstream ss;
     for(int i = 0; i < packerThreads.size(); i++ ) {
         ss << "Thread: "<<i<<" status: "<< (packerThreads[i]->isComplete()==true?"DONE!!":"WORKING") << " num circles: " << packerThreads[i]->getNumCircles()<< " elapsed time: " << packerThreads[i]->getElapsedTimeF() << endl;
+        if(!packerThreads[i]->isComplete()) {
+            bStillWorking = true;
+        }
+    }
+    if(!bStillWorking) {
+        ss << "Press Space bar to save" << endl;
     }
     ofDrawBitmapString(ss.str().c_str(), 20, 20 );
+    
 	
 }
 
